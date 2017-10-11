@@ -2,13 +2,13 @@ VERSION 5.00
 Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form Form1 
    Caption         =   "7K87K Basic demo"
-   ClientHeight    =   3555
+   ClientHeight    =   3435
    ClientLeft      =   60
    ClientTop       =   450
-   ClientWidth     =   8295
+   ClientWidth     =   8010
    LinkTopic       =   "Form1"
-   ScaleHeight     =   3555
-   ScaleWidth      =   8295
+   ScaleHeight     =   3435
+   ScaleWidth      =   8010
    StartUpPosition =   3  'Windows Default
    Begin VB.Frame Frame2 
       Caption         =   "Step2"
@@ -255,7 +255,13 @@ Dim hPort As Long
 ' Respone D2 = ">000B" -> Lost ticket
 ' Respone D3 = ">0007" -> Reserve
 
-
+Private Sub Pause(Delay As Double)
+    Dim dclock As Double
+    dclock = Timer
+        While Timer < dclock + Delay
+            DoEvents
+        Wend
+End Sub
 
 Private Sub CmdClearD2_Click()
 Dim ret As Boolean
@@ -432,6 +438,11 @@ Winsock1.Listen
 End Sub
 Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
     Dim sData As String
+    Dim iChkRM1 As Integer
+    Dim fields() As String
+    Dim iQty As Integer
+    Dim i As Integer
+    
     On Error Resume Next
     Winsock1.GetData sData
     txtCmd.Text = sData
@@ -456,6 +467,20 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
     End If
     If sData = "RL3_0" Then
         CmdClearD3_Click
+        timerStop.Enabled = True
+    End If
+    
+    iChkRM1 = InStr(1, "RM1:", sData)
+    
+    If iChkRM1 > 0 Then
+        fields() = Split(sData, ":")
+        iQty = Val(fields(1))
+        For i = 1 To iQty
+            CmdWriteDo3_Click
+            Pause (500)
+            CmdClearD3_Click
+            Pause (500)
+        Next
         timerStop.Enabled = True
     End If
 End Sub

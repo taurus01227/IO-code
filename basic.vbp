@@ -1,8 +1,8 @@
 Type=Exe
-Form=i7K87K_Basic.frm
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\SysWOW64\stdole2.tlb#OLE Automation
-Module=pacsdk; pacsdk.bas
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\Windows\SysWOW64\stdole2.tlb#OLE Automation
 Object={248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0; MSWINSCK.OCX
+Form=i7K87K_Basic.frm
+Module=pacsdk; pacsdk.bas
 IconForm="Form1"
 Startup="Form1"
 ExeName32="basic.exe"
