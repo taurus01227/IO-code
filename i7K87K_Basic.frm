@@ -10,6 +10,38 @@ Begin VB.Form Form1
    ScaleHeight     =   3435
    ScaleWidth      =   8010
    StartUpPosition =   3  'Windows Default
+   Begin VB.Frame Frame3 
+      Caption         =   "Note Dispenser"
+      Height          =   1935
+      Left            =   4920
+      TabIndex        =   25
+      Top             =   1440
+      Width           =   3015
+      Begin VB.CommandButton cmdTestDispense 
+         Caption         =   "Test"
+         Height          =   375
+         Left            =   840
+         TabIndex        =   28
+         Top             =   360
+         Width           =   855
+      End
+      Begin VB.TextBox txtDispenseQty 
+         Height          =   405
+         Left            =   120
+         TabIndex        =   27
+         Text            =   "6"
+         Top             =   360
+         Width           =   615
+      End
+      Begin VB.TextBox txtNoteDispenser 
+         Height          =   975
+         Left            =   120
+         MultiLine       =   -1  'True
+         TabIndex        =   26
+         Top             =   840
+         Width           =   2775
+      End
+   End
    Begin VB.Frame Frame2 
       Caption         =   "Step2"
       Height          =   1215
@@ -116,7 +148,7 @@ Begin VB.Form Form1
       Left            =   240
       TabIndex        =   11
       Top             =   1440
-      Width           =   7695
+      Width           =   4575
       Begin VB.Timer timerStop 
          Enabled         =   0   'False
          Interval        =   5000
@@ -126,23 +158,23 @@ Begin VB.Form Form1
       Begin VB.CommandButton CmdWriteDo4 
          Caption         =   "On"
          Height          =   375
-         Left            =   6720
+         Left            =   3720
          TabIndex        =   24
-         Top             =   480
+         Top             =   720
          Width           =   735
       End
       Begin VB.CommandButton CmdWriteDo3 
          Caption         =   "On"
          Height          =   375
-         Left            =   4920
+         Left            =   2520
          TabIndex        =   23
-         Top             =   480
+         Top             =   720
          Width           =   735
       End
       Begin VB.CommandButton CmdClearD3 
          Caption         =   "Off"
          Height          =   375
-         Left            =   4920
+         Left            =   2520
          TabIndex        =   22
          Top             =   1080
          Width           =   735
@@ -150,13 +182,13 @@ Begin VB.Form Form1
       Begin VB.CommandButton CmdWriteDo1 
          Caption         =   "On"
          Height          =   375
-         Left            =   720
+         Left            =   120
          TabIndex        =   21
-         Top             =   600
+         Top             =   720
          Width           =   735
       End
       Begin MSWinsockLib.Winsock Winsock1 
-         Left            =   3840
+         Left            =   2160
          Top             =   120
          _ExtentX        =   741
          _ExtentY        =   741
@@ -165,7 +197,7 @@ Begin VB.Form Form1
       Begin VB.CommandButton CmdClearD4 
          Caption         =   "Off"
          Height          =   375
-         Left            =   6720
+         Left            =   3720
          TabIndex        =   17
          Top             =   1080
          Width           =   735
@@ -173,15 +205,15 @@ Begin VB.Form Form1
       Begin VB.CommandButton CmdWriteDo2 
          Caption         =   "On"
          Height          =   375
-         Left            =   2640
+         Left            =   1320
          TabIndex        =   14
-         Top             =   480
+         Top             =   720
          Width           =   735
       End
       Begin VB.CommandButton CmdClearD2 
          Caption         =   "Off"
          Height          =   375
-         Left            =   2640
+         Left            =   1320
          TabIndex        =   13
          Top             =   1080
          Width           =   735
@@ -189,7 +221,7 @@ Begin VB.Form Form1
       Begin VB.CommandButton CmdClearD1 
          Caption         =   "Off"
          Height          =   375
-         Left            =   720
+         Left            =   120
          TabIndex        =   12
          Top             =   1080
          Width           =   735
@@ -197,25 +229,25 @@ Begin VB.Form Form1
       Begin VB.Label Label6 
          Caption         =   "RL4"
          Height          =   495
-         Left            =   6360
+         Left            =   3840
          TabIndex        =   20
-         Top             =   840
+         Top             =   480
          Width           =   375
       End
       Begin VB.Label Label5 
          Caption         =   "RL3"
          Height          =   495
-         Left            =   4440
+         Left            =   2760
          TabIndex        =   19
-         Top             =   840
+         Top             =   480
          Width           =   375
       End
       Begin VB.Label Label4 
          Caption         =   "RL2"
          Height          =   495
-         Left            =   2160
+         Left            =   1440
          TabIndex        =   18
-         Top             =   840
+         Top             =   480
          Width           =   375
       End
       Begin VB.Label RL1 
@@ -223,7 +255,7 @@ Begin VB.Form Form1
          Height          =   375
          Left            =   120
          TabIndex        =   15
-         Top             =   840
+         Top             =   480
          Width           =   735
       End
    End
@@ -233,6 +265,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 Dim hPort As Long
 
 'Winsock1.LocalPort = 420
@@ -255,13 +288,6 @@ Dim hPort As Long
 ' Respone D2 = ">000B" -> Lost ticket
 ' Respone D3 = ">0007" -> Reserve
 
-Private Sub Pause(Delay As Double)
-    Dim dclock As Double
-    dclock = Timer
-        While Timer < dclock + Delay
-            DoEvents
-        Wend
-End Sub
 
 Private Sub CmdClearD2_Click()
 Dim ret As Boolean
@@ -324,6 +350,20 @@ txtRes.Text = Res
 If ret = False Then
     MsgBox "Send command fail", vbOKOnly, "Send command"
 End If
+End Sub
+
+Private Sub cmdTestDispense_Click()
+    Dim i As Integer
+    Dim iQty As Integer
+    
+    txtNoteDispenser.Text = "Dispensing :" & vbCrLf & "RM1 x " & txtDispenseQty.Text
+    iQty = Val(txtDispenseQty.Text)
+    For i = 1 To iQty
+        CmdWriteDo3_Click
+        Sleep (400)
+        CmdClearD3_Click
+        Sleep (400)
+    Next
 End Sub
 
 Private Sub CmdWriteDo1_Click()
@@ -470,16 +510,17 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
         timerStop.Enabled = True
     End If
     
-    iChkRM1 = InStr(1, "RM1:", sData)
-    
+    iChkRM1 = InStr(1, sData, "RM1:")
+    txtNoteDispenser.Text = iChkRM1
     If iChkRM1 > 0 Then
         fields() = Split(sData, ":")
         iQty = Val(fields(1))
+        txtNoteDispenser.Text = "Dispensing :" & vbCrLf & fields(0) & " x " & fields(1)
         For i = 1 To iQty
             CmdWriteDo3_Click
-            Pause (500)
+            Sleep (400)
             CmdClearD3_Click
-            Pause (500)
+            Sleep (400)
         Next
         timerStop.Enabled = True
     End If
