@@ -49,16 +49,23 @@ Begin VB.Form Form1
       TabIndex        =   5
       Top             =   120
       Width           =   4215
+      Begin VB.TextBox txtCancelbtn 
+         Height          =   375
+         Left            =   3600
+         TabIndex        =   29
+         Top             =   720
+         Width           =   375
+      End
       Begin VB.TextBox txtDIValue 
          Height          =   375
          Left            =   2640
          TabIndex        =   16
          Text            =   "0"
          Top             =   720
-         Width           =   1335
+         Width           =   735
       End
       Begin VB.Timer Timer1 
-         Interval        =   1000
+         Interval        =   100
          Left            =   3960
          Top             =   240
       End
@@ -84,6 +91,14 @@ Begin VB.Form Form1
          TabIndex        =   7
          Top             =   240
          Width           =   1215
+      End
+      Begin VB.Label Label7 
+         Caption         =   "E"
+         Height          =   375
+         Left            =   3480
+         TabIndex        =   30
+         Top             =   720
+         Width           =   135
       End
       Begin VB.Label Label3 
          Caption         =   "Response"
@@ -448,8 +463,10 @@ Function readDIO()
 
     If ret = True Then
         txtDIValue.Text = Hex(DIValue)
+        If Hex(DIValue) <> "F" Then
+            txtCancelbtn.Text = Hex(DIValue)
+        End If
         readDIO = Hex(DIValue)
-    
     Else
        readDI = ""
        
@@ -483,11 +500,16 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
     Dim iQty As Integer
     Dim i As Integer
     
-    On Error Resume Next
+    'On Error Resume Next
     Winsock1.GetData sData
     txtCmd.Text = sData
     If sData = "btn_status" Then
-        Winsock1.SendData txtDIValue.Text
+        If txtCancelbtn.Text = "E" Then
+            Winsock1.SendData "E"
+            txtCancelbtn.Text = ""
+        Else
+            Winsock1.SendData txtDIValue.Text
+        End If
     End If
     If sData = "GATEUP" Then
         CmdWriteDo1_Click
