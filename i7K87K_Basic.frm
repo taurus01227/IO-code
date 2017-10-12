@@ -504,8 +504,8 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
     Winsock1.GetData sData
     txtCmd.Text = sData
     If sData = "btn_status" Then
-        If txtCancelbtn.Text = "E" Then
-            Winsock1.SendData "E"
+        If txtCancelbtn.Text <> "" Then
+            Winsock1.SendData txtCancelbtn.Text
             txtCancelbtn.Text = ""
         Else
             Winsock1.SendData txtDIValue.Text
