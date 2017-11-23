@@ -2,14 +2,29 @@ VERSION 5.00
 Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form Form1 
    Caption         =   "7K87K Basic demo"
-   ClientHeight    =   3435
+   ClientHeight    =   7800
    ClientLeft      =   60
    ClientTop       =   450
-   ClientWidth     =   8010
+   ClientWidth     =   8070
    LinkTopic       =   "Form1"
-   ScaleHeight     =   3435
-   ScaleWidth      =   8010
+   ScaleHeight     =   7800
+   ScaleWidth      =   8070
    StartUpPosition =   3  'Windows Default
+   Begin VB.Frame Frame4 
+      Caption         =   "System Log"
+      Height          =   4215
+      Left            =   240
+      TabIndex        =   31
+      Top             =   3480
+      Width           =   7695
+      Begin VB.ListBox lsLog 
+         Height          =   3765
+         Left            =   120
+         TabIndex        =   32
+         Top             =   360
+         Width           =   7455
+      End
+   End
    Begin VB.Frame Frame3 
       Caption         =   "Note Dispenser"
       Height          =   1935
@@ -50,14 +65,14 @@ Begin VB.Form Form1
       Top             =   120
       Width           =   4215
       Begin VB.TextBox txtCancelbtn 
-         Height          =   375
+         Height          =   285
          Left            =   3600
          TabIndex        =   29
          Top             =   720
          Width           =   375
       End
       Begin VB.TextBox txtDIValue 
-         Height          =   375
+         Height          =   285
          Left            =   2640
          TabIndex        =   16
          Text            =   "0"
@@ -438,6 +453,8 @@ If ret = False Then
 End If
 End Sub
 
+
+
 Private Sub Form_Load()
 Winsock1.Close
 Winsock1.LocalPort = 9200
@@ -503,6 +520,7 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
     'On Error Resume Next
     Winsock1.GetData sData
     txtCmd.Text = sData
+    
     If sData = "btn_status" Then
         If txtCancelbtn.Text <> "" Then
             Winsock1.SendData txtCancelbtn.Text
@@ -510,6 +528,8 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
         Else
             Winsock1.SendData txtDIValue.Text
         End If
+    Else
+        WriteToLog "AUTOPAY REQUEST : " & sData
     End If
     If sData = "GATEUP" Then
         CmdWriteDo1_Click
@@ -546,6 +566,20 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
         Next
         timerStop.Enabled = True
     End If
+End Sub
+
+Private Sub WriteToLog(ByVal sMessage As String)
+    Dim iCount As Integer
+    Dim dtNow As Date
+    
+    iCount = lsLog.ListCount
+    If iCount = 19 Then
+        lsLog.RemoveItem (0)
+    End If
+    
+    dtNow = Now
+    lsLog.AddItem (Format(dtNow, "dd-mm-yyyy HH:nn") & " : " & sMessage)
+   
 End Sub
 
 
