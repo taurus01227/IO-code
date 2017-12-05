@@ -326,7 +326,8 @@ Dim Res As String * 20
 ret = uart_SendCmd(hPort, "#01A100", Res)
 txtRes.Text = Res
 If ret = False Then
-    MsgBox "Send command fail", vbOKOnly, "Send command"
+    'MsgBox "Send command fail", vbOKOnly, "Send command"
+    WriteToLog "Failed to send command : Clear D2"
 End If
 End Sub
 
@@ -337,7 +338,8 @@ Dim Res As String * 20
 ret = uart_SendCmd(hPort, "#01A200", Res)
 txtRes.Text = Res
 If ret = False Then
-    MsgBox "Send command fail", vbOKOnly, "Send command"
+    'MsgBox "Send command fail", vbOKOnly, "Send command"
+     WriteToLog "Failed to send command : Clear D3"
 End If
 End Sub
 
@@ -349,7 +351,8 @@ Dim Res As String * 20
 ret = uart_SendCmd(hPort, "#01A300", Res)
 txtRes.Text = Res
 If ret = False Then
-    MsgBox "Send command fail", vbOKOnly, "Send command"
+    'MsgBox "Send command fail", vbOKOnly, "Send command"
+     WriteToLog "Failed to send command : Clear D4"
 End If
 End Sub
 
@@ -364,8 +367,8 @@ Private Sub cmdOpenCom_Click()
 'Open COM
 hPort = uart_Open(txtComFormat.Text)
 If hPort = -1 Then
-    MsgBox "Open com fail", vbOKOnly, "Open com"
-    
+    'MsgBox "Open com fail", vbOKOnly, "Open com"
+    WriteToLog "Failed to open COM PORT!"
 Else
     txtComFormat.Text = "connected"
 End If
@@ -378,7 +381,8 @@ Dim Res As String * 20
 ret = uart_SendCmd(hPort, txtCmd.Text, Res)
 txtRes.Text = Res
 If ret = False Then
-    MsgBox "Send command fail", vbOKOnly, "Send command"
+    'MsgBox "Send command fail", vbOKOnly, "Send command"
+     WriteToLog "Failed to send command : " & txtCmd.Text
 End If
 End Sub
 
@@ -404,7 +408,8 @@ Private Sub CmdWriteDo1_Click()
     ret = uart_SendCmd(hPort, "#01A001", Res)
     txtRes.Text = Res
     If ret = False Then
-        MsgBox "Send command fail", vbOKOnly, "Send command"
+        'MsgBox "Send command fail", vbOKOnly, "Send command"
+         WriteToLog "Failed to send command : Write D1"
     End If
 End Sub
 Private Sub CmdClearD1_Click()
@@ -414,7 +419,8 @@ Dim Res As String * 20
 ret = uart_SendCmd(hPort, "#01A000", Res)
 txtRes.Text = Res
 If ret = False Then
-    MsgBox "Send command fail", vbOKOnly, "Send command"
+    'MsgBox "Send command fail", vbOKOnly, "Send command"
+     WriteToLog "Failed to send command : Clear D1"
 End If
 End Sub
 
@@ -426,7 +432,8 @@ Dim Res As String * 20
 ret = uart_SendCmd(hPort, "#01A101", Res)
 txtRes.Text = Hex(DoValue)
 If ret = False Then
-    MsgBox "Send command fail", vbOKOnly, "Send command"
+    'MsgBox "Send command fail", vbOKOnly, "Send command"
+    WriteToLog "Failed to send command : Write D2"
 End If
 End Sub
 
@@ -437,7 +444,8 @@ Dim Res As String * 20
 ret = uart_SendCmd(hPort, "#01A201", Res)
 txtRes.Text = Res
 If ret = False Then
-    MsgBox "Send command fail", vbOKOnly, "Send command"
+    'MsgBox "Send command fail", vbOKOnly, "Send command"
+     WriteToLog "Failed to send command : Write D3"
 End If
 End Sub
 
@@ -449,7 +457,8 @@ Dim Res As String * 20
 ret = uart_SendCmd(hPort, "#01A301", Res)
 txtRes.Text = Res
 If ret = False Then
-    MsgBox "Send command fail", vbOKOnly, "Send command"
+    'MsgBox "Send command fail", vbOKOnly, "Send command"
+     WriteToLog "Failed to send command : Write D4"
 End If
 End Sub
 
@@ -529,7 +538,9 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
             Winsock1.SendData txtDIValue.Text
         End If
     Else
-        WriteToLog "AUTOPAY REQUEST : " & sData
+        If sData <> "" Then
+            WriteToLog "AUTOPAY REQUEST : " & sData
+        End If
     End If
     If sData = "GATEUP" Then
         CmdWriteDo1_Click
