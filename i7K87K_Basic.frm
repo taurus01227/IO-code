@@ -80,6 +80,7 @@ Begin VB.Form Form1
          Width           =   735
       End
       Begin VB.Timer Timer1 
+         Enabled         =   0   'False
          Interval        =   100
          Left            =   3960
          Top             =   240
@@ -380,6 +381,8 @@ Dim Res As String * 20
 'Send command and get response
 ret = uart_SendCmd(hPort, txtCmd.Text, Res)
 txtRes.Text = Res
+    WriteToLog (Res)
+
 If ret = False Then
     'MsgBox "Send command fail", vbOKOnly, "Send command"
      WriteToLog "Failed to send command : " & txtCmd.Text
@@ -506,6 +509,10 @@ Private Sub timerStop_Timer()
     CmdClearD1_Click
 End Sub
 
+Private Sub txtCancelbtn_Change()
+
+End Sub
+
 Private Sub Winsock1_Close()
 Winsock1.Close
 Winsock1.Listen
@@ -529,7 +536,6 @@ Private Sub Winsock1_DataArrival(ByVal bytesTotal As Long)
     'On Error Resume Next
     Winsock1.GetData sData
     txtCmd.Text = sData
-    
     If sData = "btn_status" Then
         If txtCancelbtn.Text <> "" Then
             Winsock1.SendData txtCancelbtn.Text
